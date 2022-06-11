@@ -1,12 +1,11 @@
 import os
-from flask import Flask
+from datetime import datetime
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 
 from birthday import Birthday
 
-app = Flask(__name__)
 
 CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
 GROUP_ID = os.environ["GROUP_ID"]
@@ -32,3 +31,4 @@ outputMessage = "今日は{}の誕生日です！\nおめでとうございま�
 
 if len(birthdayPeopleList) != 0:
     line_bot_api.push_message(GROUP_ID, TextSendMessage(text=outputMessage))
+

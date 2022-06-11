@@ -1,2 +1,5 @@
 birthday_files.txt
 birthday_lists.txt
+
+.venv
+__pycache__
