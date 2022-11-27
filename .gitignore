@@ -1,5 +1,7 @@
-birthday_files.txt
-birthday_lists.txt
-
 .venv
 __pycache__
+
+.env
+
+birthday_list.csv
+

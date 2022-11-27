@@ -1,34 +1,37 @@
 import os
-from datetime import datetime
 
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
+from dotenv import load_dotenv
 
-from birthday import Birthday
+from birthday import NameAndBirthdayList
 
 
-CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
-GROUP_ID = os.environ["GROUP_ID"]
+def main():
+    load_dotenv(".env")
 
-line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
+    CHANNEL_ACCESS_TOKEN = os.getenv("CHANNEL_ACCESS_TOKEN")
+    GROUP_ID = os.getenv("GROUP_ID")
 
-Me = Birthday(0)
-birthdayPeopleList = []
-includeMessage =""
+    line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
-for i in range(Me.len):
-    friend = Birthday(i)
-    if friend.is_today_birthday():
-        birthdayPeopleList.append(friend.name)
+    name_and_birthday_list = NameAndBirthdayList()
+    birthday_person_list = name_and_birthday_list.get_birthday_people()
 
-for i in birthdayPeopleList:
-    if i != birthdayPeopleList[-1]:
-        includeMessage += i + "さんと"
-    else:
-        includeMessage += i + "さん"
+    include_message = ""
 
-outputMessage = "今日は{}の誕生日です！\nおめでとうございます！🎉🎉".format(includeMessage)
+    for person in birthday_person_list:
+        if person != birthday_person_list[-1]:
+            include_message += person.name + "さんと"
+        else:
+            include_message += person.name + "さん"
 
-if len(birthdayPeopleList) != 0:
-    line_bot_api.push_message(GROUP_ID, TextSendMessage(text=outputMessage))
+    output_message = f"今日は{include_message}の誕生日です！\nおめでとうございます！🎉🎉"
 
+    if len(birthday_person_list) != 0:
+        line_bot_api.push_message(
+            GROUP_ID, TextSendMessage(text=output_message))
+
+
+if __name__ == "__main__":
+    main()

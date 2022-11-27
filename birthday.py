@@ -1,21 +1,28 @@
-import os
+import csv
+import dataclasses
 import datetime
-import pytz
 
-class Birthday:
-    def __init__(self, index):
 
-        birthday_list = eval(os.environ["BIRTHDAY_LIST"])
+@dataclasses.dataclass
+class NameAndBirthday:
+    name: str
+    month: int
+    day: int
 
-        birthday_pair = birthday_list[index]
-        self.name = birthday_pair[0]
-        self.date = birthday_pair[1].split("/")
-        self.len = len(birthday_list)
 
-    def is_today_birthday(self):
-        now = datetime.datetime.now(pytz.timezone("Asia/Tokyo"))
-        if now.month == int(self.date[0]) and now.day == int(self.date[1]):
-            return True
-        else:
-            return False
+class NameAndBirthdayList:
+    def __init__(self):
+        with open("birthday_list.csv") as f:
+            reader = csv.reader(f)
+            self.birthday_list = [
+                NameAndBirthday(name=row[0], month=int(row[1]), day=int(row[2]))
+                for row in reader
+                ]
 
+    def get_birthday_people(self) -> list[NameAndBirthday]:
+        today = datetime.date.today()
+        birthday_people = [person
+                           for person in self.birthday_list
+                           if person.month == today.month
+                           and person.day == today.day]
+        return birthday_people
